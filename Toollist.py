@@ -31,13 +31,13 @@ class Toollist:
     def __init__(self, filename=None):
         self.__dimms = dict()
         self.__err_log = []
-        self.__output_file = 'grob_'
+        self.__output_file = ''
         if filename:
             self.load_nc(filename)
             
             
     def load_nc(self, filename):
-        self.__output_file += filename
+        self.__output_file = filename + '_grob.MPF'
         try:
             with open(filename,'r',encoding='utf-8') as f:
                 for line in f.readlines():
@@ -91,16 +91,23 @@ class Toollist:
         try:
             with open(self.__output_file, 'w', encoding='utf-8') as f:
                 f.write(output)
-        except:
+        except Exception as e:
             print('Saveing failed.')
+            print(e)
 
 
+    def print_log(self):
+        for i in self.__err_log:
+            print('{}\n'.format(i))
 
 
 if __name__ == '__main__':
-    #print(Toollist.pick_PR_params('G10L10P23R149.289'))
-    
-    x = Toollist('4006.nc')
-    x.postprocess()
-
+    if len(sys.argv) > 1:
+        x = Toollist(sys.argv[1])
+        x.postprocess()
+        x.print_log()
+        #input()
+    else:
+        print('No file executed.')
+        input()
 
