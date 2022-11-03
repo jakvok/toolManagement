@@ -1,2 +1,5 @@
+.git/*.*
+.git/
 .idea/
 .idea/*.*
+DEMO_NAST_CELER.MPF
