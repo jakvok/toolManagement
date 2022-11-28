@@ -32,9 +32,10 @@ class Tool:
     _max_speed = 16000  # max. tool speed allowed [rev/min]
     _holder_rad = 31.5  # tool holder radius
     _pressure = 40      # max. internal cooling pressure
+    _max_sister_tool_nr = 10    # max count of sister tools
 
 
-    def __init__(self, name=str(), typ=120, lenght=0, radius=0, max_speed=_max_speed, pressure=_pressure, tool_check=False):
+    def __init__(self, name=str(), typ=120, lenght=0, radius=0, max_speed=_max_speed, pressure=_pressure, tool_check=False, sister=1):
         
         # tool name
         if len(str(name)) <= 32:
@@ -48,10 +49,11 @@ class Tool:
         self.max_speed = max_speed    # max tool speed allowed
         self.pressure = pressure    # internal coolant pressure
         self.tool_check = tool_check    # set if tool check active
+        self.sister = sister
 
 
     def __str__(self):
-        return 'Tool parameters:\nname: {0}\n{1} {2}\nlenght: {3}\nradius: {4}\nmax. lenght: {5}\nmax. radius: {6}\nmax. speed: {7}\ncoolant pressure: {8}\ntool check: {9}\n'.format(self._name, self._typ, self._typ.value, self._lenght, self._radius, self._max_lenght, self._max_rad, self._max_speed, self._pressure, self._tool_check)
+        return 'Tool parameters:\nname: {0}\n{1} {2}\nlenght: {3}\nradius: {4}\nmax. lenght: {5}\nmax. radius: {6}\nmax. speed: {7}\ncoolant pressure: {8}\ntool check: {9}\nsister nr: {10}\n'.format(self._name, self._typ, self._typ.value, self._lenght, self._radius, self._max_lenght, self._max_rad, self._max_speed, self._pressure, self._tool_check, self._sister)
 
 
     # tool name
@@ -169,6 +171,21 @@ class Tool:
             raise ValueError('Tool check must be bool value. True/False.')
 
 
+    @property
+    def sister(self):
+        return self._sister
+
+    @sister.setter
+    def sister(self, value):
+        if isinstance(value, int):
+            if int(value) in range(1,Tool._max_sister_tool_nr + 1):
+                self._sister = value
+            else:
+                raise ValueError('Sister tool number must be in range 1 to {0}.'.format(Tool._max_sister_tool_nr))
+        else:
+            raise ValueError('Sister tool number must be integer.')
+
+
     def postprocess(self):
         """
         Returns tool's representation in Sinumeric 840D code. 
@@ -177,7 +194,7 @@ class Tool:
 ;{self._typ}
 POCKETT={self._name}
 TOOL_NR=POCKETT+750
-$TC_TP1[TOOL_NR]=1    ;sister nr.
+$TC_TP1[TOOL_NR]={self._sister}    ;sister nr.
 $TC_TP2[TOOL_NR]=""<<POCKETT
 $TC_TP3[TOOL_NR]=1
 $TC_TP4[TOOL_NR]=1
@@ -212,13 +229,13 @@ $TC_MPP6[1,POCKETT]=TOOL_NR\n
 
 
 if __name__ == '__main__':
-    x=Tool(1, 120, 145, 6.955, 15000, 40, True)
+    x=Tool(1, 120, 145, 6.955, 15000, 40, True, 2)
     print(x)
     x.max_rad = 32
     x.max_lenght = 147
     print(x.postprocess())
-    with open('tool.MPF', 'w', encoding='utf-8') as f:
-        f.write(x.postprocess())
+    #with open('tool.MPF', 'w', encoding='utf-8') as f:
+    #   f.write(x.postprocess())
 
 
 

@@ -20,9 +20,10 @@ class Label_strip(tkinter.Frame):
         self.speed = ttk.Label(self, text='max speed', justify='center', width=10)
         self.pressure = ttk.Label(self, text='press', justify='center', width=5)
         self.t_check = ttk.Label(self, text='t-check', justify='center', width=7)
+        self.t_sister = ttk.Label(self, text='sister', justify='center', width=7)
         
         #geometry
-        self.t_nr.grid(column=0, row=0, padx=(5,7))
+        self.t_nr.grid(column=0, row=0, padx=(3, 7))
         self.t_type.grid(column=1, row=0, padx=5)
         self.t_len.grid(column=2, row=0, padx=5)
         self.t_rad.grid(column=3, row=0, padx=5)
@@ -30,7 +31,8 @@ class Label_strip(tkinter.Frame):
         self.max_rad.grid(column=5, row=0, padx=5)
         self.speed.grid(column=6, row=0, padx=5)
         self.pressure.grid(column=7, row=0, padx=5)
-        self.t_check.grid(column=8, row=0, padx=(5,10))
+        self.t_check.grid(column=8, row=0, padx=5)
+        self.t_sister.grid(column=9, row=0, padx=(5, 10))
         
         
 
