@@ -33,9 +33,10 @@ class Tool:
     _holder_rad = 31.5  # tool holder radius
     _pressure = 40      # max. internal cooling pressure
     _max_sister_tool_nr = 10    # max count of sister tools
+    _max_turret_positions = 60  # max count of pocketts in turret
 
 
-    def __init__(self, name=str(), typ=120, lenght=0, radius=0, max_speed=_max_speed, pressure=_pressure, tool_check=False, sister=1):
+    def __init__(self, name=str(), typ=120, lenght=0, radius=0, max_speed=_max_speed, pressure=_pressure, tool_check=False, sister=1, pockett=0):
         
         # tool name
         if len(str(name)) <= 32:
@@ -50,6 +51,13 @@ class Tool:
         self.pressure = pressure    # internal coolant pressure
         self.tool_check = tool_check    # set if tool check active
         self.sister = sister
+        if pockett == 0:
+            try:
+                self.pockett = int(self.name)
+            except ValueError:
+                self.pockett = 0
+        else:
+            self.pockett = pockett
 
 
     def __str__(self):
@@ -178,12 +186,28 @@ class Tool:
     @sister.setter
     def sister(self, value):
         if isinstance(value, int):
-            if int(value) in range(1,Tool._max_sister_tool_nr + 1):
+            if int(value) in range(1, Tool._max_sister_tool_nr + 1):
                 self._sister = value
             else:
                 raise ValueError('Sister tool number must be in range 1 to {0}.'.format(Tool._max_sister_tool_nr))
         else:
             raise ValueError('Sister tool number must be integer.')
+
+
+    @property
+    def pockett(self):
+        return self._pockett
+
+    @pockett.setter
+    def pockett(self, value):
+        if isinstance(value, int):
+            if int(value) in range(1, Tool._max_turret_positions + 1):
+                self._pockett = value
+            else:
+                raise ValueError('Pockett position must be in range 1 to {0}.'.format(Tool._max_turret_positions))
+        else:
+            raise ValueError('Pockett number must be integer.')
+
 
 
     def postprocess(self):
@@ -192,10 +216,13 @@ class Tool:
         """
         output = f'''
 ;{self._typ}
-POCKETT={self._name}
+TOOL_NAME={self._name}
+SISTER={self._sister}
+POCKETT={self._pockett}
+;------------------
 TOOL_NR=POCKETT+750
-$TC_TP1[TOOL_NR]={self._sister}    ;sister nr.
-$TC_TP2[TOOL_NR]=""<<POCKETT
+$TC_TP1[TOOL_NR]=SISTER   ;sister nr.
+$TC_TP2[TOOL_NR]=""<<TOOL_NAME
 $TC_TP3[TOOL_NR]=1
 $TC_TP4[TOOL_NR]=1
 $TC_TP5[TOOL_NR]=1

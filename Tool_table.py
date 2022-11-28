@@ -20,10 +20,10 @@ class Label_strip(tkinter.Frame):
         self.speed = ttk.Label(self, text='max speed', justify='center', width=10)
         self.pressure = ttk.Label(self, text='press', justify='center', width=5)
         self.t_check = ttk.Label(self, text='t-check', justify='center', width=7)
-        self.t_sister = ttk.Label(self, text='sister', justify='center', width=7)
+        self.t_sister = ttk.Label(self, text='sisters', justify='center', width=7)
         
         #geometry
-        self.t_nr.grid(column=0, row=0, padx=(3, 7))
+        self.t_nr.grid(column=0, row=0, padx=(7, 7))
         self.t_type.grid(column=1, row=0, padx=5)
         self.t_len.grid(column=2, row=0, padx=5)
         self.t_rad.grid(column=3, row=0, padx=5)
@@ -32,13 +32,13 @@ class Label_strip(tkinter.Frame):
         self.speed.grid(column=6, row=0, padx=5)
         self.pressure.grid(column=7, row=0, padx=5)
         self.t_check.grid(column=8, row=0, padx=5)
-        self.t_sister.grid(column=9, row=0, padx=(5, 10))
+        self.t_sister.grid(column=9, row=0, padx=(5, 2))
         
         
 
 class Tool_strip(tkinter.Frame):
 
-    def __init__(self, t_nr, t_type, t_len, t_rad, max_len, max_rad, speed, pressure, t_check):
+    def __init__(self, t_nr, t_type, t_len, t_rad, max_len, max_rad, speed, pressure, t_check, sisters=1):
         super().__init__()
 
         # variables
@@ -59,6 +59,8 @@ class Tool_strip(tkinter.Frame):
         self.pressure.set(pressure)
         self.t_check = tkinter.BooleanVar(self)
         self.t_check.set(t_check)
+        self.sisters = tkinter.IntVar(self)
+        self.sisters.set(sisters)
 
         #styles
         style = ttk.Style()
@@ -82,10 +84,11 @@ class Tool_strip(tkinter.Frame):
         self.max_rad_entry = ttk.Entry(self, textvariable=self.max_rad, width=10, justify='right', style='Dim.TEntry')
         self.speed_entry = ttk.Entry(self, textvariable=self.speed, width=10, justify='right', style='Dim.TEntry')
         self.pressure_entry = ttk.Entry(self, textvariable=self.pressure, width=5, justify='right', style='Dim.TEntry')
-        self.tool_check = ttk.Checkbutton(self, variable=self.t_check, width=7)
+        self.tool_check = ttk.Checkbutton(self, variable=self.t_check, width=10)
+        self.sisters_entry = ttk.Entry(self, textvariable=self.sisters, width=3, justify='right')
 
         #geometry
-        self.nr_label.grid(column=0, row=0, padx=7)
+        self.nr_label.grid(column=0, row=0, padx=(17, 7))
         self.type_entry.grid(column=1, row=0)
         self.len_entry.grid(column=2, row=0, padx=5)
         self.rad_entry.grid(column=3, row=0, padx=5)
@@ -93,7 +96,8 @@ class Tool_strip(tkinter.Frame):
         self.max_rad_entry.grid(column=5, row=0, padx=5)
         self.speed_entry.grid(column=6, row=0, padx=5)
         self.pressure_entry.grid(column=7, row=0, padx=5)
-        self.tool_check.grid(column=8, row=0, padx=(5,10))
+        self.tool_check.grid(column=8, row=0, padx=(20, 20))
+        self.sisters_entry.grid(column=8, row=0, padx=(30, 2))
 
 
 
@@ -117,6 +121,7 @@ class Tool_table:
                 self.toollist[n].max_speed = root.strip[n].speed.get()
                 self.toollist[n].pressure = root.strip[n].pressure.get()
                 self.toollist[n].tool_check = root.strip[n].t_check.get()
+                self.toollist[n].sister = root.strip[n].sisters.get()
             
             root.destroy()
             
@@ -133,7 +138,7 @@ class Tool_table:
         for n in range(len(root.strip)):
             root.strip[n].grid(column=1, row=n+1)
             
-        root.button_exit.grid(column=1,row=n+2, pady=5)
+        root.button_exit.grid(column=1, row=n+2, pady=5)
         
         # 
         
