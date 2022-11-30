@@ -20,11 +20,14 @@ class T_container:
         self.typ = 120
         self.pressure = 0
         self.tool_check = False
+        self.sister = 1
 
         n = pos
         while True:
             if lines[n].endswith('M7') or 'M7 ' in lines[n]:
                 self.pressure = 40
+            if 'SETPIECE(' in lines[n]:
+                self.sister += 1
             if 'CYCLE81(' in lines[n] or 'CYCLE83(' in lines[n]:
                 self.typ = 200
             if 'CYCLE84(' in lines[n]:
@@ -57,7 +60,7 @@ class T_container:
                 self.tool_check = True
 
     def __str__(self):
-        return 'name:{0} typ:{1} pressure: {2} tool_check: {3}'.format(self.name, self.typ, self.pressure, self.tool_check)
+        return 'name:{0} typ:{1} pressure: {2} tool_check: {3} sisterNr: {4}'.format(self.name, self.typ, self.pressure, self.tool_check, self.sister)
 
 
 class Tool_scan:

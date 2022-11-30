@@ -61,7 +61,7 @@ class Tool:
 
 
     def __str__(self):
-        return 'Tool parameters:\nname: {0}\n{1} {2}\nlenght: {3}\nradius: {4}\nmax. lenght: {5}\nmax. radius: {6}\nmax. speed: {7}\ncoolant pressure: {8}\ntool check: {9}\nsister nr: {10}\n'.format(self._name, self._typ, self._typ.value, self._lenght, self._radius, self._max_lenght, self._max_rad, self._max_speed, self._pressure, self._tool_check, self._sister)
+        return 'Tool parameters:\nname: {0}\n{1} {2}\nlenght: {3}\nradius: {4}\nmax. lenght: {5}\nmax. radius: {6}\nmax. speed: {7}\ncoolant pressure: {8}\ntool check: {9}\nsister nr.: {10}\npockett nr.: {11}\n'.format(self._name, self._typ, self._typ.value, self._lenght, self._radius, self._max_lenght, self._max_rad, self._max_speed, self._pressure, self._tool_check, self._sister, self._pockett)
 
 
     # tool name
@@ -256,7 +256,7 @@ $TC_MPP6[1,POCKETT]=TOOL_NR\n
 
 
 if __name__ == '__main__':
-    x=Tool(1, 120, 145, 6.955, 15000, 40, True, 2)
+    x=Tool(1, 120, 145, 6.955, 15000, 40, True, pockett=21)
     print(x)
     x.max_rad = 32
     x.max_lenght = 147

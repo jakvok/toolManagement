@@ -130,7 +130,7 @@ class Tool_table:
         
         root.strip = list()
         for t in self.toollist:
-            root.strip.append(Tool_strip(t.name, t.typ.name, t.lenght, t.radius, t.max_lenght, t.max_rad,  t.max_speed, t.pressure, t.tool_check))
+            root.strip.append(Tool_strip(t.name, t.typ.name, t.lenght, t.radius, t.max_lenght, t.max_rad,  t.max_speed, t.pressure, t.tool_check, t.sister))
         
         # geometry
         Label_strip().grid(column=1, row=0)

@@ -28,7 +28,7 @@ class Grob_tools:
         scanned_tools = sc.scan(self._input_file)
 
         for t in scanned_tools:
-            self.toollist.append(Tool.Tool(t.name, t.typ, 0, 0, 16000, t.pressure, t.tool_check))
+            self.toollist.append(Tool.Tool(t.name, typ=t.typ, pressure=t.pressure, tool_check=t.tool_check, sister=t.sister))
         
         
     def prt_toollist(self):
@@ -39,6 +39,21 @@ class Grob_tools:
     def post_standalone(self, filename=''):
         if not filename and self._output_file:
             filename = self._output_file
+        
+        pocketts = []
+        for x in self.toollist:
+            pocketts.append(x.pockett)
+        free_pockett = max(pocketts) + 2
+        
+        toollist = []
+        for tool in self.toollist:
+            if tool.sister > 1:
+                toollist.append(Tool.Tool(tool.name, tool.typ, tool.lenght, tool.radius, tool.max_speed, tool.pressure, tool.tool_check, sister=1, pockett=tool.pockett))
+                for n in range(1, tool.sister):
+                    toollist.append(Tool.Tool(tool.name, tool.typ, tool.lenght, tool.radius, tool.max_speed, tool.pressure, tool.tool_check, sister=n+1, pockett=free_pockett))
+                    free_pockett += 2
+            else: toollist.append(tool)
+        self.toollist = toollist
         
         output = '''
 DEF INT TOOL_NAME
@@ -73,5 +88,5 @@ if __name__ == '__main__':
     x = Grob_tools()
     x.load_tools('0057.MPF')
     x.edit_tools()
-    x.prt_toollist()
     x.post_standalone()
+    x.prt_toollist()
