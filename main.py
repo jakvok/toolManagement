@@ -14,7 +14,7 @@ if __name__ == '__main__':
     print('''
 +----------------------------+
 | Grob G-350 tool management |
-|       v1.1 11-2022         |
+|       v1.2 11-2022         |
 +----------------------------+
 
 ''')
@@ -27,7 +27,7 @@ if __name__ == '__main__':
         x.edit_tools()
         x.prt_toollist()
         x.post_standalone()
-        input('Press any key to exit...')
+        #input('Press any key to exit...')
     else:
         print('No file executed.\nDrag & drop MPF file onto script icon.')
         input()
