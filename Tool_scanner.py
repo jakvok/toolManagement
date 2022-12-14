@@ -34,6 +34,9 @@ class T_container:
                 self.typ = 240
             if 'CYCLE85(' in lines[n]:
                 self.typ = 250
+            if 'M30' in lines[n]:
+                self.name = None
+                break
             if lines[n].endswith('M5') or 'M5 ' in lines[n]:
                 break
             n += 1
@@ -89,7 +92,8 @@ class Tool_scan:
         #    print('{0}: {1}'.format(k[0], k[1]))
         
         for k in tools_pos:
-            self._tools.append(T_container(self._lines, k[1]))
+            m = T_container(self._lines, k[1])
+            if m.name: self._tools.append(m)
         
         self._tools.sort(key=lambda x: int(x.name))
         
@@ -109,6 +113,6 @@ class Tool_scan:
         
 if __name__ == '__main__':
     x = Tool_scan()
-    tools = x.scan('0057.MPF')
+    tools = x.scan('0033_SONDA.MPF')
     for n in tools:
         print(n)

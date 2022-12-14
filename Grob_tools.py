@@ -79,14 +79,14 @@ CHANDATA(1)\n
 
     def edit_tools(self):
         x = Tool_table.Tool_table(self.toollist)
-        self.toollist = x.edit()
+        self.toollist = x.toollist
         
 
 
 
 if __name__ == '__main__':
     x = Grob_tools()
-    x.load_tools('0057.MPF')
+    x.load_tools('0033_SONDA.MPF')
     x.edit_tools()
     x.post_standalone()
     x.prt_toollist()
