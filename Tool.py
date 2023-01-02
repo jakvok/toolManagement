@@ -256,13 +256,7 @@ $TC_MPP6[1,POCKETT]=TOOL_NR\n
 
 
 if __name__ == '__main__':
-    x=Tool(1, 120, 145, 6.955, 15000, 40, True, pockett=21)
-    print(x)
-    x.max_rad = 32
-    x.max_lenght = 147
-    print(x.postprocess())
-    #with open('tool.MPF', 'w', encoding='utf-8') as f:
-    #   f.write(x.postprocess())
+    pass
 
 
 

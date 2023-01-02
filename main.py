@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python3
 """
-Created on Fri Nov 11 12:50:02 2022
-
-@author: vokac
+App creates instance of Grob_tools and loads list of tools from NC prog given as
+an argument in command line.
+Runs editing values of found toolset and postprocess new NC programm for Sinumerik
+control system. The output NC program set up all tools and needed values
+in CNC machine.
 """
 
 import Grob_tools
@@ -27,7 +29,6 @@ if __name__ == '__main__':
         x.edit_tools()
         x.prt_toollist()
         x.post_standalone()
-        #input('Press any key to exit...')
     else:
         print('No file executed.\nDrag & drop MPF file onto script icon.')
         input()

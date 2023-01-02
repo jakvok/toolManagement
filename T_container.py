@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python3
-"""
-Created on Thu Nov 10 07:52:23 2022
 
-@author: vokac
-"""
+
 class T_container:
+    """
+    Instance of the class represents the tool and some it's parameters which are possible to extract from given NC file.
     
+    input: 
+        - list <lines>: all lines of NC file; each list element = one NC file line
+        - int <pos>: index in <lines>, where toolchange located
+    
+    """
     def __init__(self, lines, pos):
         
+        # extract tool name (the number) from reference line with tool change. The number is following T letter.
         name = ''
         for ch in lines[pos][1:]:
             if ch.isdigit(): 
@@ -17,41 +22,57 @@ class T_container:
                 break
 
         self.name = name
+        # set default values
         self.typ = 120
         self.pressure = 0
         self.tool_check = False
         self.sister = 1
 
+        # go downward thru lines, find keywords and set parameters
         n = pos
         while True:
+            # set internal cooling pressure at 40bars if M7 found
             if lines[n].endswith('M7') or 'M7 ' in lines[n]:
                 self.pressure = 40
+            # increase sister tool number if SETPIECE found
             if 'SETPIECE(' in lines[n]:
                 self.sister += 1
+            # set tool type to drill if drilling cycles found
             if 'CYCLE81(' in lines[n] or 'CYCLE83(' in lines[n]:
                 self.typ = 200
+            # set tool type to tap if tapping cycle found
             if 'CYCLE84(' in lines[n]:
                 self.typ = 240
+            # set tool type to reamer if reaming cycle found
             if 'CYCLE85(' in lines[n]:
                 self.typ = 250
+            # protection against empty toolchange at the end of the nc prog
             if 'M30' in lines[n]:
                 self.name = None
                 break
+            # ends parsing at end of tool section
             if lines[n].endswith('M5') or 'M5 ' in lines[n]:
                 break
             n += 1
         
+        # go upward thru lines, find keywords and set parameters
         n = pos
         while True:
+            # find line with N letter at the beginning
             if lines[n].startswith('N'):
+                # set tool type to thread mill
                 if 'ZAVIT' in lines[n] and 'FR' in lines[n]:
                     self.typ = 145
+                # set tool type to face mill
                 elif 'CELNI' in lines[n]:
                     self.typ = 140
+                # set tool type to pre drill
                 elif 'NAVRT' in lines[n]:
                     self.typ = 220
+                # set tool type to ball mill
                 elif 'KULO' in lines[n] or 'KOUL' in lines[n]:
                     self.typ = 110
+                # set tool type to deburring tool
                 elif 'SRAZ' in lines[n] or 'ODHROT' in lines[n]:
                     self.typ = 120
                 else:
@@ -59,60 +80,21 @@ class T_container:
                 break
             n -= 1
 
+            # turn on tool check if tool is holemaking tool
             if self.typ in [200, 220, 240, 250]:
                 self.tool_check = True
 
     def __str__(self):
+        """
+        Text representation of tool container
+
+        Returns
+        -------
+        TYPE   string
+        """
         return 'name:{0} typ:{1} pressure: {2} tool_check: {3} sisterNr: {4}'.format(self.name, self.typ, self.pressure, self.tool_check, self.sister)
 
 
-class Tool_scan:
-    
-    def __init__(self):
-        
-        self._lines = []
-        self._tools = []
-        
-        
-    def scan(self, filename):
-        
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                for line in f.readlines():
-                    self._lines.append(line.strip())
-        except FileNotFoundError as e:
-            print(e)
-          
-        tools_pos = []
-        for n in range(len(self._lines)-1):
-            if self._lines[n].startswith('T') and self._lines[n+1] == 'M6' and '=' not in self._lines[n]:
-                tools_pos.append([self._lines[n], n])
-        
-        #for k in tools_pos:
-        #    print('{0}: {1}'.format(k[0], k[1]))
-        
-        for k in tools_pos:
-            m = T_container(self._lines, k[1])
-            if m.name: self._tools.append(m)
-        
-        self._tools.sort(key=lambda x: int(x.name))
-        
-        n = 0
-        while 1:
-            if n >= len(self._tools)-1: break
-            if self._tools[n].name == self._tools[n+1].name:
-                if self._tools[n].pressure >= self._tools[n+1].pressure:
-                    del self._tools[n+1]
-                else:
-                    del self._tools[n]
-                continue
-            n += 1
-
-        return self._tools
-
         
 if __name__ == '__main__':
-    x = Tool_scan()
-    tools = x.scan('0033_SONDA.MPF')
-    for n in tools:
-        print(n)
+    pass

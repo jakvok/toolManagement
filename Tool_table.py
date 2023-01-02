@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import tkinter
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import Tool
 
 
@@ -11,7 +11,8 @@ class Tool_table(tkinter.Tk):
     Tool table shows given list of Tool instances and values of their attributes.
     The values (Tool's attributes) are free to edit.
     The changed values are saved into Tool instances in tool list.
-    """    
+    """
+    
     def __init__(self, toollist):
         super().__init__()
         self.toollist = toollist    # list of Tool instances
@@ -70,6 +71,9 @@ class Tool_table(tkinter.Tk):
         self.label_check = ttk.Label(self, text='t-check', justify='center')
         self.label_sister = ttk.Label(self, text='sisters', justify='center')
 
+        vcmd_lens = (self.register(self.check_lens), '%P', '%W')
+        ivcmd_lens = (self.register(self.bad_lens), '%W')
+
         # Tool widgets; widgets to show tool's attributes and their values
         self.w_names = []      # list of widgets - tool names
         self.w_types = []      # list of widgets - tool types
@@ -93,6 +97,7 @@ class Tool_table(tkinter.Tk):
             self.w_lens.append(ttk.Entry(self, textvariable=self.t_lens[n], style='DIM.TEntry'))
             self.w_lens[-1].configure(width=7)
             self.w_lens[-1].configure(justify='right')
+            self.w_lens[-1].configure(validate='focusout', validatecommand=vcmd_lens, invalidcommand=ivcmd_lens)
             self.w_rads.append(ttk.Entry(self, textvariable=self.t_rads[n], style='DIM.TEntry'))
             self.w_rads[-1].configure(width=7)
             self.w_rads[-1].configure(justify='right')
@@ -150,7 +155,7 @@ class Tool_table(tkinter.Tk):
 
     def go_back(self):
         """
-        Function save edited values from tkinter variables into attribute toollist
+        Function saves edited values from tkinter variables into attribute toollist
         and quit editing
         """
         for n in range(len(self.toollist)):
@@ -164,9 +169,42 @@ class Tool_table(tkinter.Tk):
             self.toollist[n].tool_check = self.t_checks[n].get()
             self.toollist[n].sister = self.t_sisters[n].get()                
 
-        self.destroy()
+        self.quit()
     
-    
+
+    def check_lens(self, value, widg):
+        """
+        function check if entry input is a number and returns True if so.
+        If not, returns False and paint value to red
+        """
+        try:
+            float(value)
+            # if value is float set color back to black
+            self.nametowidget(widg)['foreground'] = 'black' # method points to current widget object
+            return True
+        except ValueError:
+            if value == '':
+                # if value is empty, set default value 
+                self.nametowidget(widg).insert(0, Tool.Tool._max_tl)
+                return True
+            # if value is not a float, set color to red
+            self.nametowidget(widg)['foreground'] = 'red'
+            return False
+
+
+    def bad_lens(self, widg):
+        """
+        When entry input is not valid, shows error message box and change entry value
+        """
+        # error message
+        messagebox.showerror('Value Error', 'Input value must be a number!')
+        # delete involved string chars from index 0 to the last srting index
+        self.nametowidget(widg).delete(0, len(self.nametowidget(widg).get()))
+        # insert default value
+        self.nametowidget(widg).insert(0, Tool.Tool._max_tl)
+        # set color to black
+        self.nametowidget(widg)['foreground'] = 'black'
+
 
 if __name__ == '__main__':
     pass
