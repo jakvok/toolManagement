@@ -174,20 +174,17 @@ class Tool_table(tkinter.Tk):
 
     def check_lens(self, value, widg):
         """
-        function check if entry input is a number and returns True if so.
+        function check if entry input is in range and returns True if so.
         If not, returns False and paint value to red
         """
         try:
-            float(value)
-            # if value is float set color back to black
-            self.nametowidget(widg)['foreground'] = 'black' # method points to current widget object
+            x = float(value)
+            # when value out of range, raise exception
+            if x < 0 or Tool.Tool._max_tl < x or value == '':
+                raise ValueError
             return True
         except ValueError:
-            if value == '':
-                # if value is empty, set default value 
-                self.nametowidget(widg).insert(0, Tool.Tool._max_tl)
-                return True
-            # if value is not a float, set color to red
+            # paints value to red
             self.nametowidget(widg)['foreground'] = 'red'
             return False
 
@@ -197,7 +194,7 @@ class Tool_table(tkinter.Tk):
         When entry input is not valid, shows error message box and change entry value
         """
         # error message
-        messagebox.showerror('Value Error', 'Input value must be a number!')
+        messagebox.showerror('Value Error', 'Input value out of range!')
         # delete involved string chars from index 0 to the last srting index
         self.nametowidget(widg).delete(0, len(self.nametowidget(widg).get()))
         # insert default value

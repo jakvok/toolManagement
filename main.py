@@ -16,9 +16,8 @@ if __name__ == '__main__':
     print('''
 +----------------------------+
 | Grob G-350 tool management |
-|       v1.2 11-2022         |
+|       v1.2 01-2023         |
 +----------------------------+
-
 ''')
     if len(sys.argv) > 1:
         print('Creating tool list instance...')
