@@ -148,7 +148,7 @@ class Tool_table(tkinter.Tk):
             self.w_sisters[n].grid(column=9, row=n+1, **paddings)        
 
         # Exit button geometry
-        self.button_exit.grid(column=4, columnspan=2, row=n+2, **paddings)
+        self.button_exit.grid(column=4, columnspan=2, row=62, **paddings)
             
         self.mainloop()
         
