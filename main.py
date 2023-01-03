@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/python3
 """
 App creates instance of Grob_tools and loads list of tools from NC prog given as
@@ -16,7 +15,7 @@ if __name__ == '__main__':
     print('''
 +----------------------------+
 | Grob G-350 tool management |
-|       v1.2 01-2023         |
+|       v1.2.1 01-2023         |
 +----------------------------+
 ''')
     if len(sys.argv) > 1:

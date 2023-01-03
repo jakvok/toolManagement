@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/python3
 
 import math
@@ -27,16 +26,16 @@ class Tool:
     """
     
     # fixed tool dimensions, Grob G-350 with 60 tool turret positions
-    _max_tr = 170/2     # max. tool radius
-    _max_tl = 350       # max. tool lenght
-    _max_speed = 16000  # max. tool speed allowed [rev/min]
-    _holder_rad = 31.5  # tool holder radius
-    _pressure = 40      # max. internal cooling pressure
-    _max_sister_tool_nr = 10    # max count of sister tools
-    _max_turret_positions = 60  # max count of pocketts in turret
+    max_tr = 170/2     # max. tool radius
+    max_tl = 350       # max. tool lenght
+    max_ts = 16000  # max. tool speed allowed [rev/min]
+    holder_rad = 31.5  # tool holder radius
+    t_press = 40      # max. internal cooling pressure
+    max_sister_tool_nr = 10    # max count of sister tools
+    max_turret_positions = 60  # max count of pocketts in turret
+    
 
-
-    def __init__(self, name=str(), typ=120, lenght=0, radius=0, max_speed=_max_speed, pressure=_pressure, tool_check=False, sister=1, pockett=0):
+    def __init__(self, name=str(), typ=120, lenght=0, radius=0, max_speed=max_ts, pressure=t_press, tool_check=False, sister=1, pockett=0):
         
         # tool name
         if len(str(name)) <= 32:
@@ -90,14 +89,14 @@ class Tool:
 
     @lenght.setter
     def lenght(self, value):
-        if value >= 0 and value <= Tool._max_tl:
+        if value >= 0 and value <= Tool.max_tl:
             self._lenght = value
             if value == 0:
-                self._max_lenght = Tool._max_tl
+                self._max_lenght = Tool.max_tl
             else:
-                self._max_lenght = min([math.ceil(value/10)*10+10, Tool._max_tl])            
+                self._max_lenght = min([math.ceil(value/10)*10+10, Tool.max_tl])            
         else:
-            raise ValueError('Tool lenght must be in range 0-{0}.'.format(Tool._max_tl))
+            raise ValueError('Tool lenght must be in range 0-{0}.'.format(Tool.max_tl))
 
 
     # tool radius
@@ -107,11 +106,11 @@ class Tool:
     
     @radius.setter
     def radius(self, value):
-        if value >= 0 and value <= Tool._max_tr:
+        if value >= 0 and value <= Tool.max_tr:
             self._radius = value
-            self._max_rad = max([min([math.ceil(value)+1, Tool._max_tr]), Tool._holder_rad])
+            self._max_rad = max([min([math.ceil(value)+1, Tool.max_tr]), Tool.holder_rad])
         else:
-            raise ValueError('Tool radius must be in range 0-{0}.'.format(Tool._max_tr))
+            raise ValueError('Tool radius must be in range 0-{0}.'.format(Tool.max_tr))
     
 
     # max tool lenght
@@ -121,10 +120,10 @@ class Tool:
     
     @max_lenght.setter
     def max_lenght(self, value):
-        if value >= self._lenght and value <= Tool._max_tl:
+        if value >= self._lenght and value <= Tool.max_tl:
             self._max_lenght = value
         else:
-            raise ValueError('Max. lenght out of range [{0}-{1}]'.format(self._lenght, Tool._max_tl))
+            raise ValueError('Max. lenght out of range [{0}-{1}]'.format(self._lenght, Tool.max_tl))
 
 
     # max tool radius
@@ -134,10 +133,10 @@ class Tool:
 
     @max_rad.setter
     def max_rad(self, value):
-        if value >= max([self._radius, Tool._holder_rad]) and value <= Tool._max_tr:
+        if value >= max([self._radius, Tool.holder_rad]) and value <= Tool.max_tr:
             self._max_rad = value
         else:
-            raise ValueError('Max. radius out of range [{0}-{1}]'.format(max([self._radius, Tool._holder_rad]), Tool._max_tr))
+            raise ValueError('Max. radius out of range [{0}-{1}]'.format(max([self._radius, Tool.holder_rad]), Tool.max_tr))
 
 
     # max tool speed allowed
@@ -147,10 +146,10 @@ class Tool:
     
     @max_speed.setter
     def max_speed(self, value):
-        if value > 0 and value <= Tool._max_speed:
+        if value > 0 and value <= Tool.max_ts:
             self._max_speed = value
         else:
-            raise ValueError('Must be: 16000 > Max. tool speed > 0.')
+            raise ValueError('Must be: {0} > Max. tool speed > 0.'.format(Tool.max_ts))
 
 
     # internal coolant pressure
@@ -160,10 +159,10 @@ class Tool:
     
     @pressure.setter
     def pressure(self, value):
-        if value >= 0 and value <= Tool._pressure:
+        if value >= 0 and value <= Tool.t_press:
             self._pressure = value
         else:
-            raise ValueError('Internal coolant pressure must be in range 0-{0}'.format(Tool._pressure))
+            raise ValueError('Internal coolant pressure must be in range 0-{0}'.format(Tool.t_press))
             
     
     # set if tool check active
@@ -186,10 +185,10 @@ class Tool:
     @sister.setter
     def sister(self, value):
         if isinstance(value, int):
-            if int(value) in range(1, Tool._max_sister_tool_nr + 1):
+            if int(value) in range(1, Tool.max_sister_tool_nr + 1):
                 self._sister = value
             else:
-                raise ValueError('Sister tool number must be in range 1 to {0}.'.format(Tool._max_sister_tool_nr))
+                raise ValueError('Sister tool number must be in range 1 to {0}.'.format(Tool.max_sister_tool_nr))
         else:
             raise ValueError('Sister tool number must be integer.')
 
@@ -201,10 +200,10 @@ class Tool:
     @pockett.setter
     def pockett(self, value):
         if isinstance(value, int):
-            if int(value) in range(1, Tool._max_turret_positions + 1):
+            if int(value) in range(1, Tool.max_turret_positions + 1):
                 self._pockett = value
             else:
-                raise ValueError('Pockett position must be in range 1 to {0}.'.format(Tool._max_turret_positions))
+                raise ValueError('Pockett position must be in range 1 to {0}.'.format(Tool.max_turret_positions))
         else:
             raise ValueError('Pockett number must be integer.')
 

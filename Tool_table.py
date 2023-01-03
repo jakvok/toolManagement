@@ -71,8 +71,17 @@ class Tool_table(tkinter.Tk):
         self.label_check = ttk.Label(self, text='t-check', justify='center')
         self.label_sister = ttk.Label(self, text='sisters', justify='center')
 
+        # commands for number input validation handling
         vcmd_lens = (self.register(self.check_lens), '%P', '%W')
         ivcmd_lens = (self.register(self.bad_lens), '%W')
+        vcmd_rads = (self.register(self.check_rads), '%P', '%W')
+        ivcmd_rads = (self.register(self.bad_rads), '%W')
+        vcmd_speeds = (self.register(self.check_speeds), '%P', '%W')
+        ivcmd_speeds = (self.register(self.bad_speeds), '%W')
+        vcmd_pressures = (self.register(self.check_pressures), '%P', '%W')
+        ivcmd_pressures = (self.register(self.bad_pressures), '%W')
+        vcmd_sisters = (self.register(self.check_sisters), '%P', '%W')
+        ivcmd_sisters = (self.register(self.bad_sisters), '%W')
 
         # Tool widgets; widgets to show tool's attributes and their values
         self.w_names = []      # list of widgets - tool names
@@ -101,23 +110,29 @@ class Tool_table(tkinter.Tk):
             self.w_rads.append(ttk.Entry(self, textvariable=self.t_rads[n], style='DIM.TEntry'))
             self.w_rads[-1].configure(width=7)
             self.w_rads[-1].configure(justify='right')
+            self.w_rads[-1].configure(validate='focusout', validatecommand=vcmd_rads, invalidcommand=ivcmd_rads)
             self.w_max_lens.append(ttk.Entry(self, textvariable=self.t_max_lens[n], style='DIM.TEntry'))
             self.w_max_lens[-1].configure(width=7)
             self.w_max_lens[-1].configure(justify='right')
+            self.w_max_lens[-1].configure(validate='focusout', validatecommand=vcmd_lens, invalidcommand=ivcmd_lens)
             self.w_max_rads.append(ttk.Entry(self, textvariable=self.t_max_rads[n], style='DIM.TEntry'))
             self.w_max_rads[-1].configure(width=7)
             self.w_max_rads[-1].configure(justify='right')
+            self.w_max_rads[-1].configure(validate='focusout', validatecommand=vcmd_rads, invalidcommand=ivcmd_rads)
             self.w_speeds.append(ttk.Entry(self, textvariable=self.t_speeds[n]))
             self.w_speeds[-1].configure(width=7)
             self.w_speeds[-1].configure(justify='right')
+            self.w_speeds[-1].configure(validate='focusout', validatecommand=vcmd_speeds, invalidcommand=ivcmd_speeds)
             self.w_pressures.append(ttk.Entry(self, textvariable=self.t_pressures[n]))
             self.w_pressures[-1].configure(width=5)
             self.w_pressures[-1].configure(justify='right')
+            self.w_pressures[-1].configure(validate='focusout', validatecommand=vcmd_pressures, invalidcommand=ivcmd_pressures)
             self.w_checks.append(tkinter.Checkbutton(self, text='', variable=self.t_checks[n]))
             self.w_checks[-1].configure(width=6)
             self.w_sisters.append(ttk.Entry(self, textvariable=self.t_sisters[n]))
             self.w_sisters[-1].configure(width=5)
             self.w_sisters[-1].configure(justify='right')
+            self.w_sisters[-1].configure(validate='focusout', validatecommand=vcmd_sisters, invalidcommand=ivcmd_sisters)
         
         # Button widget for exit editing
         self.button_exit = ttk.Button(self, text='EXIT', command=self.go_back)
@@ -148,7 +163,7 @@ class Tool_table(tkinter.Tk):
             self.w_sisters[n].grid(column=9, row=n+1, **paddings)        
 
         # Exit button geometry
-        self.button_exit.grid(column=4, columnspan=2, row=62, **paddings)
+        self.button_exit.grid(column=4, columnspan=2, row=len(self.toollist)+2, **paddings)
             
         self.mainloop()
         
@@ -172,16 +187,131 @@ class Tool_table(tkinter.Tk):
         self.quit()
     
 
+    def __value_check(self, value, check_value, widg):
+        """
+        Function check if entry input is in range and returns True if so.
+        If not, returns False and paint value to red
+        Parameters
+        ----------
+        value :
+            value get from widget.
+        check_value :
+            value to check.
+        widg :
+            current widget.
+        Returns
+        -------
+        bool
+            if value is in range 0 to check_value
+        """
+        try:
+            x = float(value)
+            # when value out of range, raise exception
+            if x < 0 or check_value < x or value == '':
+                raise ValueError
+            return True
+        except ValueError:
+            # paints value to red
+            self.nametowidget(widg)['foreground'] = 'red'
+            return False
+        
+    
+    def __value_out_of_range(self, replace_value, widg):
+        """
+        Function replace widget content by replace_value and paint it black.
+        Parameters
+        ----------
+        widg :
+            widget to replace bad value
+        replace_value :
+            value to replace
+        Returns
+        -------
+        None.
+        """
+        # error message
+        messagebox.showerror('Value Error', 'Input value out of range!')
+        # delete involved string chars from index 0 to the last srting index
+        self.nametowidget(widg).delete(0, len(self.nametowidget(widg).get()))
+        # insert default value
+        self.nametowidget(widg).insert(0, replace_value)
+        # set color to black
+        self.nametowidget(widg)['foreground'] = 'black'
+
+
     def check_lens(self, value, widg):
         """
         function check if entry input is in range and returns True if so.
         If not, returns False and paint value to red
         """
+        return self.__value_check(value, Tool.Tool.max_tl, widg)
+
+
+    def bad_lens(self, widg):
+        """
+        When entry input is not valid, shows error message box and change entry value to default
+        """
+        self.__value_out_of_range(Tool.Tool.max_tl, widg)
+        
+
+    def check_rads(self, value, widg):
+        """
+        function check if entry input is in range and returns True if so.
+        If not, returns False and paint value to red
+        """
+        return self.__value_check(value, Tool.Tool.max_tr, widg)
+
+
+    def bad_rads(self, widg):
+        """
+        When entry input is not valid, shows error message box and change entry value to default
+        """
+        self.__value_out_of_range(31.5, widg)
+        
+
+    def check_speeds(self, value, widg):
+        """
+        function check if entry input is in range and returns True if so.
+        If not, returns False and paint value to red
+        """
+        return self.__value_check(value, Tool.Tool.max_ts, widg)
+
+
+    def bad_speeds(self, widg):
+        """
+        When entry input is not valid, shows error message box and change entry value to default
+        """
+        self.__value_out_of_range(Tool.Tool.max_ts, widg)
+        
+
+    def check_pressures(self, value, widg):
+        """
+        function check if entry input is in range and returns True if so.
+        If not, returns False and paint value to red
+        """
+        return self.__value_check(value, Tool.Tool.t_press, widg)
+
+
+    def bad_pressures(self, widg):
+        """
+        When entry input is not valid, shows error message box and change entry value to default
+        """
+        self.__value_out_of_range(Tool.Tool.t_press, widg)
+        
+
+    def check_sisters(self, value, widg):
+        """
+        function try to convert entry input to int and returns True if entry input is in range.
+        If not, returns False and paint value to red
+        """
         try:
-            x = float(value)
+            x = int(value)
             # when value out of range, raise exception
-            if x < 0 or Tool.Tool._max_tl < x or value == '':
+            if x < 1 or Tool.Tool.max_sister_tool_nr < x or value == '':
                 raise ValueError
+            # delete involved string chars from index 0 to the last srting index
+            #self.nametowidget(widg).delete(0, len(self.nametowidget(widg).get()))
+            #self.nametowidget(widg).insert(0, x)
             return True
         except ValueError:
             # paints value to red
@@ -189,18 +319,12 @@ class Tool_table(tkinter.Tk):
             return False
 
 
-    def bad_lens(self, widg):
+    def bad_sisters(self, widg):
         """
-        When entry input is not valid, shows error message box and change entry value
+        When entry input is not valid, shows error message box and change entry value to default
         """
-        # error message
-        messagebox.showerror('Value Error', 'Input value out of range!')
-        # delete involved string chars from index 0 to the last srting index
-        self.nametowidget(widg).delete(0, len(self.nametowidget(widg).get()))
-        # insert default value
-        self.nametowidget(widg).insert(0, Tool.Tool._max_tl)
-        # set color to black
-        self.nametowidget(widg)['foreground'] = 'black'
+        self.__value_out_of_range(1, widg)
+
 
 
 if __name__ == '__main__':
