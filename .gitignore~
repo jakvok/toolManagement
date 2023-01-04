@@ -1,0 +1,13 @@
+.gitignore
+.idea/
+.idea/*.*
+*.nc
+*.NC
+*.MPF
+!DEMO_NAST_CELER.MPF
+!4007.nc
+__pycache__/
+__pycache__/*.*
+*.png
+*.ico
+main_1.py
