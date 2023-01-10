@@ -49,7 +49,8 @@ class Tool:
         self.max_speed = max_speed    # max tool speed allowed
         self.pressure = pressure    # internal coolant pressure
         self.tool_check = tool_check    # set if tool check active
-        self.sister = sister
+        self.sister = sister    # sister tool nr.
+        # if pockett place in turret not specified, try to assign tool into pockett same as T-number
         if pockett == 0:
             try:
                 self.pockett = int(self.name)
@@ -213,6 +214,13 @@ class Tool:
         """
         Returns tool's representation in Sinumeric 840D code. 
         """
+        
+        # assign paremeter TC_TP8 (active or inactive tool)
+        if self.sister > 1:
+            TC_TP8 = 130
+        else:
+            TC_TP8 = 131
+        
         output = f'''
 ;{self._typ}
 TOOL_NAME={self._name}
@@ -227,7 +235,7 @@ $TC_TP4[TOOL_NR]=1
 $TC_TP5[TOOL_NR]=1
 $TC_TP6[TOOL_NR]=1
 $TC_TP7[TOOL_NR]=1
-$TC_TP8[TOOL_NR]=131
+$TC_TP8[TOOL_NR]={TC_TP8}
 ;$A_TOOLMN[TOOL_NR]=1
 ;$A_TOOLMLN[TOOL_NR]=POCKETT
 ;$P_TOOLND[TOOL_NR]=1    ;D1, D2, D...
